@@ -1,6 +1,3 @@
-from django.http import HttpResponseRedirect
-from django.contrib.auth.models import User
-
 from rest_framework import permissions, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -22,7 +19,7 @@ def current_user(request):
 class UserList(APIView):
     """
     Create a new user. It's called 'UserList' because normally we'd have a get
-    method here too, for retrieving a list of all User objects.
+    method here for retrieving a list of all User objects.
     """
 
     permission_classes = (permissions.AllowAny,)
