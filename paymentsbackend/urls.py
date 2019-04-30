@@ -20,6 +20,4 @@ urlpatterns = [
     path('core/', include('core.urls')),
     path('token-auth/', obtain_jwt_token),
     path('admin/', admin.site.urls),
-    url(r'^api-auth/', include('rest_framework.urls'))
-
 ]
