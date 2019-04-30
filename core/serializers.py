@@ -1,6 +1,7 @@
-from .models import User
+from .models import User, Transaction, TransactionType
 
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 from rest_framework_jwt.settings import api_settings
 
 
@@ -35,3 +36,20 @@ class UserSerializerWithToken(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('token', 'username', 'password')
+
+
+class TransactionTypeSerializer(serializers.ModelSerializer):
+    transaction_type = serializers.CharField(
+        max_length=5,
+        validators=[UniqueValidator(queryset=TransactionType.objects.all())]
+    )
+
+    class Meta:
+        model = TransactionType
+        fields = ('transaction_type', 'commission')
+
+
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = ('id', 'sent_amount', 'sender', 'receiver')

@@ -28,14 +28,14 @@ class UserProfile(models.Model):
 class Account(models.Model):
     uuid = models.UUIDField(default=uuid4, primary_key=True)
     currency = models.ForeignKey('Currency', on_delete=models.CASCADE)
-    balance = models.PositiveIntegerField()
+    balance = models.DecimalField(max_digits=6, decimal_places=2)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,on_delete=models.CASCADE,
         related_name='account'
     )
 
     def __str__(self):
-        return str(self.uuid)
+        return f'{self.user} - {self.currency.currency} : {self.balance}'
 
 
 class Currency(models.Model):
@@ -105,9 +105,9 @@ class Transaction(models.Model):
     )
 
     # Explicitly storing all finance data as post-calculations might differ
-    sent_amount = models.PositiveIntegerField()
-    received_amount = models.PositiveIntegerField()
-    commission = models.PositiveIntegerField()
+    sent_amount = models.DecimalField(max_digits=6, decimal_places=2)
+    received_amount = models.DecimalField(max_digits=6, decimal_places=2)
+    commission = models.DecimalField(max_digits=6, decimal_places=2)
 
     # Storing values for permanence and data encapsulation
     sender_currency = models.CharField(max_length=3)
