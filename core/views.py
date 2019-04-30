@@ -3,9 +3,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import TransactionType, Transaction
+from .models import TransactionType, Transaction, Account, User
 from .serializers import (UserSerializer, UserSerializerWithToken,
-                          TransactionSerializer, TransactionTypeSerializer)
+                          TransactionSerializer, TransactionTypeSerializer,
+                          AccountSerializer)
 
 
 @api_view(['GET'])
@@ -42,3 +43,13 @@ class TransactionTypeViewSet(viewsets.ModelViewSet):
 class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
+
+
+class AccountViewSet(viewsets.ModelViewSet):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer

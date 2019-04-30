@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     # 3rd party
     'rest_framework',
     'corsheaders',
+    'rest_framework_swagger',
 
     # In-house
     'core.apps.CoreConfig'
@@ -115,6 +116,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+    'PAGE_SIZE': 10
 }
 
 CORS_ORIGIN_WHITELIST = (

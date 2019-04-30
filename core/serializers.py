@@ -1,15 +1,24 @@
-from .models import User, Transaction, TransactionType
+from .models import User, Transaction, TransactionType, Account
 
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_jwt.settings import api_settings
 
 
+class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ('uuid', 'currency', 'balance')
+
+
 class UserSerializer(serializers.ModelSerializer):
+    accounts = AccountSerializer(
+        source='get_accounts', many=True, read_only=True
+    )
 
     class Meta:
         model = User
-        fields = ('username',)
+        fields = ('id', 'username', 'accounts')
 
 
 class UserSerializerWithToken(serializers.ModelSerializer):
@@ -46,7 +55,7 @@ class TransactionTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TransactionType
-        fields = ('transaction_type', 'commission')
+        fields = ('id', 'transaction_type', 'commission')
 
 
 class TransactionSerializer(serializers.ModelSerializer):

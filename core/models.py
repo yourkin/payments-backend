@@ -14,8 +14,13 @@ class User(AbstractUser):
     Payments user model
     """
     username = models.CharField(max_length=100, blank=True, unique=True)
-    transactions = models.ManyToManyField('Transaction')
     USERNAME_FIELD = 'username'
+
+    def get_accounts(self):
+        return self.account.all()
+
+    def __str__(self):
+        return self.username
 
 
 class UserProfile(models.Model):
