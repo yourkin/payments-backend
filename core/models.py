@@ -148,3 +148,6 @@ class Transaction(models.Model):
         self.receiver.balance = self.receiver.balance + self.received_amount
         self.sender.save()
         self.receiver.save()
+
+    def __str__(self):
+        return f'{self.sender.user} -> {self.receiver.user}: {self.sent_amount} {self.sender_currency}'
