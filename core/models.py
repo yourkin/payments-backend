@@ -12,7 +12,7 @@ class User(AbstractUser):
     """
     Payments user model
     """
-    username = models.CharField(max_length=100, blank=True, unique=True)
+    username = models.CharField(max_length=100, unique=True)
     USERNAME_FIELD = 'username'
     transactions = models.ManyToManyField('Transaction')
 
