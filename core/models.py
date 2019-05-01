@@ -39,6 +39,9 @@ class Account(models.Model):
         related_name='account'
     )
 
+    def get_username(self):
+        return self.user.username
+
     def __str__(self):
         return f'{self.user} - {self.currency.currency} : {self.balance}'
 

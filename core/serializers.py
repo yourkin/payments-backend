@@ -6,9 +6,11 @@ from rest_framework_jwt.settings import api_settings
 
 
 class AccountSerializer(serializers.ModelSerializer):
+    client = serializers.CharField(source='get_username', read_only=True)
+
     class Meta:
         model = Account
-        fields = ('uuid', 'currency', 'balance')
+        fields = ('uuid', 'currency', 'balance', 'client')
 
 
 class UserSerializerWithToken(serializers.ModelSerializer):
