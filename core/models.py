@@ -1,4 +1,5 @@
 from uuid import uuid4
+from decimal import Decimal
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -15,6 +16,7 @@ class User(AbstractUser):
     """
     username = models.CharField(max_length=100, blank=True, unique=True)
     USERNAME_FIELD = 'username'
+    transactions = models.ManyToManyField('Transaction')
 
     def get_accounts(self):
         return self.account.all()
@@ -99,10 +101,10 @@ class Transaction(models.Model):
     """
     Transaction model
     """
-    sender = models.ForeignKey(
+    sender_account = models.ForeignKey(
         Account, related_name='funds_sender', on_delete=models.PROTECT
     )
-    receiver = models.ForeignKey(
+    receiver_account = models.ForeignKey(
         Account, related_name='funds_receiver', on_delete=models.PROTECT
     )
     transaction_type = models.ForeignKey(
@@ -114,25 +116,25 @@ class Transaction(models.Model):
     received_amount = models.DecimalField(max_digits=6, decimal_places=2)
     commission = models.DecimalField(max_digits=6, decimal_places=2)
 
-    # Storing values for permanence and data encapsulation
+    # Storing values for permanence and safety
     sender_currency = models.CharField(max_length=3)
     receiver_currency = models.CharField(max_length=3)
     conversion_rate = models.FloatField()
 
     def get_transaction_type(self):
-        if self.sender.user != self.receiver.user:
+        if self.sender_account.user != self.receiver_account.user:
             t = FUNDS_TRANSFER_TO_OTHER
         else:
             t = FUNDS_TRANSFER_TO_SELF
         return TransactionType.objects.get(transaction_type=t)
 
     def get_commission(self):
-        return self.sent_amount * self.transaction_type.commission
+        return self.sent_amount * Decimal(self.transaction_type.commission)
 
     def get_conversion_rate(self):
         if self.sender_currency != self.receiver_currency:
             rate = CurrencyConversionRate.objects.get(
-                from_currency=self.sender.currency,
+                from_currency=self.sender_account.currency,
                 to_currency=self.receiver_currency).rate
         else:
             rate = 1
@@ -140,19 +142,23 @@ class Transaction(models.Model):
 
     def save(self, *args, **kwargs):
         self.transaction_type = self.get_transaction_type()
-        self.sender_currency = self.sender.currency
-        self.receiver_currency = self.receiver.currency
+        self.sender_currency = self.sender_account.currency
+        self.receiver_currency = self.receiver_account.currency
         self.commission = self.get_commission()
         self.conversion_rate = self.get_conversion_rate()
-        self.received_amount = (self.sent_amount * self.conversion_rate -
-                                self.commission)
+        self.received_amount = (self.sent_amount * Decimal(self.conversion_rate)
+                                - self.commission)
 
         super(Transaction, self).save(*args, **kwargs)
 
-        self.sender.balance = self.sender.balance - self.sent_amount
-        self.receiver.balance = self.receiver.balance + self.received_amount
-        self.sender.save()
-        self.receiver.save()
+        self.sender_account.balance = (self.sender_account.balance -
+                                       self.sent_amount)
+        self.receiver_account.balance = (self.receiver_account.balance +
+                                         self.received_amount)
+        self.sender_account.save()
+        self.receiver_account.save()
 
     def __str__(self):
-        return f'{self.sender.user} -> {self.receiver.user}: {self.sent_amount} {self.sender_currency}'
+        return (f'{self.sender_account.user} -> '
+                f'{self.receiver_account.user}: '
+                f'{self.sent_amount} {self.sender_currency}')

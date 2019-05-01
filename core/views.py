@@ -44,6 +44,12 @@ class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
 
+    def perform_create(self, serializer):
+        transaction = serializer.save()
+        transaction.sender_account.user.transactions.add(transaction)
+        if transaction.sender_account.user != transaction.receiver_account.user:
+            transaction.receiver_account.user.transactions.add(transaction)
+
 
 class AccountViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.all()

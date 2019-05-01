@@ -11,16 +11,6 @@ class AccountSerializer(serializers.ModelSerializer):
         fields = ('uuid', 'currency', 'balance')
 
 
-class UserSerializer(serializers.ModelSerializer):
-    accounts = AccountSerializer(
-        source='get_accounts', many=True, read_only=True
-    )
-
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'accounts')
-
-
 class UserSerializerWithToken(serializers.ModelSerializer):
 
     token = serializers.SerializerMethodField()
@@ -61,4 +51,15 @@ class TransactionTypeSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
-        fields = ('id', 'sent_amount', 'sender', 'receiver')
+        fields = ('id', 'sent_amount', 'sender_account', 'receiver_account')
+
+
+class UserSerializer(serializers.ModelSerializer):
+    accounts = AccountSerializer(
+        source='get_accounts', many=True, read_only=True
+    )
+    transactions = TransactionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'accounts', 'transactions')
