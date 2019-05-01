@@ -5,9 +5,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 
-
-FUNDS_TRANSFER_TO_SELF = 'SELF'
-FUNDS_TRANSFER_TO_OTHER = 'OTHER'
+from .conf import FUNDS_TRANSFER_TO_SELF, FUNDS_TRANSFER_TO_OTHER, CURRENCY
 
 
 class User(AbstractUser):
@@ -46,13 +44,10 @@ class Account(models.Model):
 
 
 class Currency(models.Model):
-    USD = 'USD'
-    EUR = 'EUR'
-    CNY = 'CNY'
     CURRENCY_CHOICES = (
-        (USD, 'US Dollar'),
-        (EUR, 'Euro'),
-        (CNY, 'Chinese Yuan'),
+        (CURRENCY['USD'], 'US Dollar'),
+        (CURRENCY['EUR'], 'Euro'),
+        (CURRENCY['CNY'], 'Chinese Yuan'),
 
     )
     currency = models.CharField(
@@ -149,7 +144,7 @@ class Transaction(models.Model):
         self.received_amount = (self.sent_amount * Decimal(self.conversion_rate)
                                 - self.commission)
 
-        super(Transaction, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
         self.sender_account.balance = (self.sender_account.balance -
                                        self.sent_amount)

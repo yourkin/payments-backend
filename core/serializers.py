@@ -45,7 +45,7 @@ class TransactionTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TransactionType
-        fields = ('id', 'transaction_type', 'commission')
+        fields = ('transaction_type', 'commission')
 
 
 class TransactionSerializer(serializers.ModelSerializer):

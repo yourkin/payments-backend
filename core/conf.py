@@ -1,0 +1,14 @@
+FUNDS_TRANSFER_TO_SELF = 'SELF'
+FUNDS_TRANSFER_TO_OTHER = 'OTHER'
+
+CURRENCY = {
+    'USD': 'USD',
+    'EUR': 'EUR',
+    'CNY': 'CNY',
+}
+
+INITIAL_BALANCE = {
+    'USD': 100,
+    'EUR': 0,
+    'CNY': 0,
+}
