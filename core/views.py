@@ -65,7 +65,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
         instance = serializer.save()
         instance.sender_account.user.transactions.add(instance)
         if instance.sender_account.user != instance.receiver_account.user:
-            instance.receiver_account.user.transactions.add(transaction)
+            instance.receiver_account.user.transactions.add(instance)
 
 
 class AccountViewSet(viewsets.ModelViewSet):
