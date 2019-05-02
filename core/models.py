@@ -1,5 +1,6 @@
 from uuid import uuid4
 from decimal import Decimal
+from datetime import datetime
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -108,6 +109,7 @@ class Transaction(models.Model):
     transaction_type = models.ForeignKey(
         TransactionType, on_delete=models.PROTECT
     )
+    transaction_date = models.DateTimeField(default=datetime.now)
 
     # Explicitly storing all finance data as post-calculations might differ
     sent_amount = models.DecimalField(max_digits=6, decimal_places=2)
@@ -140,8 +142,8 @@ class Transaction(models.Model):
 
     def save(self, *args, **kwargs):
         self.transaction_type = self.get_transaction_type()
-        self.sender_currency = self.sender_account.currency
-        self.receiver_currency = self.receiver_account.currency
+        self.sender_currency = self.sender_account.currency.currency
+        self.receiver_currency = self.receiver_account.currency.currency
         self.commission = self.get_commission()
         self.conversion_rate = self.get_conversion_rate()
         self.received_amount = (self.sent_amount * Decimal(self.conversion_rate)
