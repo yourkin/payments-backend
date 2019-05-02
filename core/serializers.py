@@ -47,14 +47,18 @@ class TransactionTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TransactionType
-        fields = ('transaction_type', 'commission')
+        fields = ('transaction_type', 'commission_rate')
 
 
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
-        fields = ('id', 'sent_amount', 'transaction_date',
-                  'sender_account', 'receiver_account')
+        fields = (
+            'id', 'sender_account', 'sender_username', 'sent_amount',
+            'sender_currency', 'receiver_account', 'receiver_username',
+            'commission_rate', 'commission', 'receiver_currency',
+            'conversion_rate', 'received_amount', 'transaction_date',
+        )
 
 
 class UserSerializer(serializers.ModelSerializer):
