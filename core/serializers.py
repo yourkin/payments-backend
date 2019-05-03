@@ -51,7 +51,16 @@ class TransactionTypeSerializer(serializers.ModelSerializer):
 
 
 class TransactionSerializer(serializers.ModelSerializer):
-    transaction_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
+    transaction_date = serializers.DateTimeField(
+        format='%Y-%m-%d %H:%M:%S', read_only=True)
+    sender_currency = serializers.CharField(read_only=True)
+    commission_rate = serializers.FloatField(read_only=True)
+    commission = serializers.DecimalField(read_only=True,
+                                          max_digits=6, decimal_places=2)
+    receiver_currency = serializers.CharField(read_only=True)
+    conversion_rate = serializers.FloatField(read_only=True)
+    received_amount = serializers.DecimalField(read_only=True,
+                                               max_digits=6, decimal_places=2)
 
     class Meta:
         model = Transaction
