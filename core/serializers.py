@@ -76,7 +76,6 @@ class UserSerializer(serializers.ModelSerializer):
     accounts = AccountSerializer(
         source='get_accounts', many=True, read_only=True
     )
-    transactions = TransactionSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
