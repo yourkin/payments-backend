@@ -124,7 +124,7 @@ CORS_ORIGIN_WHITELIST = (
 )
 
 JWT_AUTH = {
-    'JWT_RESPONSE_PAYLOAD_HANDLER': 'utils.my_jwt_response_handler',
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'core.utils.my_jwt_response_handler',
     'JWT_VERIFY_EXPIRATION': False,
 }
 
