@@ -141,7 +141,7 @@ class Transaction(models.Model):
                 from_currency=self.sender_account.currency,
                 to_currency=self.receiver_currency).conversion_rate
         else:
-            rate = 1
+            conversion_rate = 1
         return Decimal(conversion_rate)
 
     def get_commission_rate(self):
