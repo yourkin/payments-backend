@@ -10,9 +10,6 @@ from .conf import FUNDS_TRANSFER_TO_SELF, FUNDS_TRANSFER_TO_OTHER, CURRENCY
 
 
 class User(AbstractUser):
-    """
-    Payments user model
-    """
     uuid = models.UUIDField(default=uuid4, primary_key=True)
     username = models.CharField(max_length=100, unique=True)
     USERNAME_FIELD = 'username'
@@ -23,13 +20,6 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
-
-
-class UserProfile(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
-        related_name='profile'
-    )
 
 
 class Account(models.Model):
@@ -80,9 +70,6 @@ class CurrencyConversionRate(models.Model):
 
 
 class TransactionType(models.Model):
-    """
-    Transaction type model
-    """
     TRANSACTION_TYPE_CHOICES = (
         (FUNDS_TRANSFER_TO_SELF, 'Funds Transfer to Self'),
         (FUNDS_TRANSFER_TO_OTHER, 'Funds Transfer to Other'),
@@ -98,9 +85,6 @@ class TransactionType(models.Model):
 
 
 class Transaction(models.Model):
-    """
-    Transaction model
-    """
     sender_account = models.ForeignKey(
         Account, related_name='funds_sender', on_delete=models.PROTECT
     )
