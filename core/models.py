@@ -13,7 +13,6 @@ class User(AbstractUser):
     """
     Payments user model
     """
-    uuid = models.UUIDField(default=uuid4, primary_key=True)
     username = models.CharField(max_length=100, unique=True)
     USERNAME_FIELD = 'username'
     transactions = models.ManyToManyField('Transaction')
