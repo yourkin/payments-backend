@@ -16,19 +16,14 @@ from .conf import CURRENCY, INITIAL_BALANCE
 @api_view(['GET'])
 def current_user(request):
     """
-    Determine the current user by their token, and return their data
+    Determine the current user by their token and return their data
     """
 
     serializer = UserSerializer(request.user)
     return Response(serializer.data)
 
 
-class UserList(APIView):
-    """
-    Create a new user. It's called 'UserList' because normally we'd have a get
-    method here for retrieving a list of all User objects.
-    """
-
+class CreateUser(APIView):
     permission_classes = (permissions.AllowAny,)
 
     @transaction.atomic
