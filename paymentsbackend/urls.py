@@ -7,7 +7,7 @@ from rest_framework_jwt.views import obtain_jwt_token
 from rest_framework_swagger.views import get_swagger_view
 
 from core.views import (TransactionViewSet, TransactionTypeViewSet,
-                        AccountViewSet, UserViewSet)
+                        AccountViewSet, UserViewSet, index)
 
 
 router = routers.DefaultRouter()
@@ -22,7 +22,8 @@ schema_view = get_swagger_view(title='Payments API')
 
 
 urlpatterns = [
-    url(r'^', include(router.urls)),
+    path('', index, name='index'),
+    path('api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls',
                                namespace='rest_framework')),
     url(r'^dev/$', schema_view),

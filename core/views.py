@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.shortcuts import render
 
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import api_view
@@ -67,3 +68,6 @@ class AccountViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
 
+
+def index(request):
+    return render(request, 'build/index.html')
