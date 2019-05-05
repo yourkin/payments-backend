@@ -2,6 +2,7 @@ from uuid import uuid4
 from decimal import Decimal
 from datetime import datetime
 
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
@@ -25,7 +26,10 @@ class User(AbstractUser):
 class Account(models.Model):
     uuid = models.UUIDField(default=uuid4, primary_key=True)
     currency = models.ForeignKey('Currency', on_delete=models.CASCADE)
-    balance = models.DecimalField(max_digits=6, decimal_places=2)
+    balance = models.DecimalField(
+        max_digits=6, decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.00'))]
+    )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,on_delete=models.CASCADE,
         related_name='account'
@@ -63,7 +67,7 @@ class CurrencyConversionRate(models.Model):
     to_currency = models.ForeignKey(
         Currency, on_delete=models.CASCADE, related_name='to_currency'
     )
-    conversion_rate = models.FloatField()
+    conversion_rate = models.FloatField(validators=[MinValueValidator(0.0)])
 
     def __str__(self):
         return f'{self.from_currency.currency} - {self.to_currency.currency}'
@@ -97,13 +101,22 @@ class Transaction(models.Model):
     transaction_date = models.DateTimeField(default=datetime.now)
 
     # Explicitly storing all finance data as post-calculations might differ
-    sent_amount = models.DecimalField(max_digits=6, decimal_places=2)
-    received_amount = models.DecimalField(max_digits=6, decimal_places=2)
-    commission = models.DecimalField(max_digits=6, decimal_places=2)
+    sent_amount = models.DecimalField(
+        max_digits=6, decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.01'))]
+    )
+    received_amount = models.DecimalField(
+        max_digits=6, decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.01'))]
+    )
+    commission = models.DecimalField(
+        max_digits=6, decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.00'))]
+    )
     sender_currency = models.CharField(max_length=3)
     receiver_currency = models.CharField(max_length=3)
-    commission_rate = models.FloatField()
-    conversion_rate = models.FloatField()
+    commission_rate = models.FloatField(validators=[MinValueValidator(0.0)])
+    conversion_rate = models.FloatField(validators=[MinValueValidator(0.0)])
 
     @property
     def sender_username(self):
