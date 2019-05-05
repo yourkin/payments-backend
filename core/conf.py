@@ -12,3 +12,5 @@ INITIAL_BALANCE = {
     'EUR': 0,
     'CNY': 0,
 }
+
+MIN_BALANCE = 0

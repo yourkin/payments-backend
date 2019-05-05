@@ -7,7 +7,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 
-from .conf import FUNDS_TRANSFER_TO_SELF, FUNDS_TRANSFER_TO_OTHER, CURRENCY
+from .conf import (FUNDS_TRANSFER_TO_SELF, FUNDS_TRANSFER_TO_OTHER, CURRENCY,
+                   MIN_BALANCE)
 
 
 class User(AbstractUser):
@@ -28,7 +29,7 @@ class Account(models.Model):
     currency = models.ForeignKey('Currency', on_delete=models.CASCADE)
     balance = models.DecimalField(
         max_digits=6, decimal_places=2,
-        validators=[MinValueValidator(Decimal('0.00'))]
+        validators=[MinValueValidator(Decimal(MIN_BALANCE))]
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,on_delete=models.CASCADE,

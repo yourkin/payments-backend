@@ -4,6 +4,8 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_jwt.settings import api_settings
 
+from .conf import MIN_BALANCE
+
 
 class AccountSerializer(serializers.ModelSerializer):
     client = serializers.CharField(source='get_username', read_only=True)
@@ -35,6 +37,11 @@ class TransactionSerializer(serializers.ModelSerializer):
     conversion_rate = serializers.FloatField(read_only=True)
     received_amount = serializers.DecimalField(read_only=True,
                                                max_digits=6, decimal_places=2)
+
+    def validate(self, data):
+        if data['sender_account'].balance - data['sent_amount'] < MIN_BALANCE:
+            raise serializers.ValidationError('Amount exceeds account balance')
+        return data
 
     class Meta:
         model = Transaction
