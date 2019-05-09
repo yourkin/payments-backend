@@ -95,7 +95,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'paymentsfrontend', 'build', 'static'),
+    os.path.join(BASE_DIR, 'paymentsfrontend', 'static'),
 )
 
 REST_FRAMEWORK = {

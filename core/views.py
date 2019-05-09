@@ -70,4 +70,4 @@ class AccountViewSet(viewsets.ModelViewSet):
 
 
 def index(request):
-    return render(request, 'build/index.html')
+    return render(request, 'index.html')
