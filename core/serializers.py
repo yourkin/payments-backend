@@ -39,6 +39,12 @@ class TransactionSerializer(serializers.ModelSerializer):
                                                max_digits=6, decimal_places=2)
 
     def validate(self, data):
+        user_uuid = User.objects.get(username=self.context['request'].user).uuid
+        account = Account.objects.get(uuid=data['sender_account'].uuid)
+
+        if user_uuid != account.user.uuid:
+            raise serializers.ValidationError('Can not send from this account')
+
         if data['sender_account'].balance - data['sent_amount'] < MIN_BALANCE:
             raise serializers.ValidationError('Amount exceeds account balance')
         return data
