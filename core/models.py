@@ -3,7 +3,8 @@ from decimal import Decimal
 from datetime import datetime
 
 from django.core.validators import MinValueValidator
-from django.db import models
+from django.core.exceptions import ValidationError
+from django.db import models, transaction
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 
@@ -35,6 +36,25 @@ class Account(models.Model):
         settings.AUTH_USER_MODEL,on_delete=models.CASCADE,
         related_name='account'
     )
+
+    @classmethod
+    def deposit(cls, uuid, amount):
+        with transaction.atomic():
+            account = (cls.objects.select_for_update().get(uuid=uuid))
+            account.balance += amount
+            account.save()
+
+    @classmethod
+    def withdraw(cls, uuid, amount):
+        with transaction.atomic():
+            account = (cls.objects.select_for_update().get(uuid=uuid))
+
+            if account.balance < amount:
+                raise ValidationError('Insufficient funds')
+            account.balance -= amount
+            account.save()
+
+        return account
 
     def get_username(self):
         return self.user.username
@@ -164,6 +184,9 @@ class Transaction(models.Model):
         self.received_amount = self.get_received_amount()
 
         super().save(*args, **kwargs)
+
+        Account.withdraw(uuid=self.sender_account.uuid, amount=self.sent_amount)
+        Account.deposit(uuid=self.receiver_account.uuid, amount=self.received_amount)
 
         self.sender_account.balance = (self.sender_account.balance -
                                        self.sent_amount)
