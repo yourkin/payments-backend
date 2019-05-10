@@ -8,7 +8,7 @@ from .models import (User, Account, Transaction, TransactionType,
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
-        (None, {'fields': ('username', 'password')}),
+        (None, {'fields': ('username', 'password', 'uuid')}),
         ('Permissions',
          {'fields': ('is_active', 'is_staff', 'is_superuser',
                      'groups', 'user_permissions')}),
