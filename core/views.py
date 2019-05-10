@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.shortcuts import render
 
-from rest_framework import permissions, status, viewsets
+from rest_framework import permissions, status, viewsets, mixins
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -64,7 +64,8 @@ class TransactionViewSet(viewsets.ModelViewSet):
             instance.receiver_account.user.transactions.add(instance)
 
 
-class AccountViewSet(viewsets.ModelViewSet):
+class AccountViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin,
+                     viewsets.GenericViewSet):
     queryset = Account.objects.all()
     serializer_class = AccountSerializer
 
