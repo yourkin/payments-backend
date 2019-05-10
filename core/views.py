@@ -48,7 +48,8 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
 
-class TransactionTypeViewSet(viewsets.ModelViewSet):
+class TransactionTypeViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin,
+                             viewsets.GenericViewSet):
     queryset = TransactionType.objects.all()
     serializer_class = TransactionTypeSerializer
 
