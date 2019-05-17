@@ -188,13 +188,6 @@ class Transaction(models.Model):
         Account.withdraw(uuid=self.sender_account.uuid, amount=self.sent_amount)
         Account.deposit(uuid=self.receiver_account.uuid, amount=self.received_amount)
 
-        self.sender_account.balance = (self.sender_account.balance -
-                                       self.sent_amount)
-        self.receiver_account.balance = (self.receiver_account.balance +
-                                         self.received_amount)
-        self.sender_account.save()
-        self.receiver_account.save()
-
     def __str__(self):
         return (f'{self.sender_account.user} -> '
                 f'{self.receiver_account.user}: '
