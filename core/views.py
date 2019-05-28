@@ -58,6 +58,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
 
+    @transaction.atomic()
     def perform_create(self, serializer):
         instance = serializer.save()
         instance.sender_account.user.transactions.add(instance)
