@@ -27,9 +27,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -112,10 +112,13 @@ REST_FRAMEWORK = {
     # 'PAGE_SIZE': 1000
 }
 
-CORS_ORIGIN_WHITELIST = (
-    'localhost:3000',
-    'localhost:5000'
-)
+# CORS_ORIGIN_WHITELIST = (
+#     'localhost:3000',
+#     'localhost:5000',
+#     '127.0.0.1:3000',
+# )
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 JWT_AUTH = {
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'core.utils.my_jwt_response_handler',
