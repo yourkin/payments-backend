@@ -1,10 +1,9 @@
 from django.db import transaction
 from django.shortcuts import render
 
-from rest_framework import permissions, status, viewsets, mixins
+from rest_framework import permissions, viewsets, mixins
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from .models import TransactionType, Transaction, Account, User, Currency
 from .serializers import (UserSerializer, UserSerializerWithToken,
@@ -24,28 +23,22 @@ def current_user(request):
     return Response(serializer.data)
 
 
-class CreateUser(APIView):
+class UserViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
+    queryset = User.objects.all()
+    serializer_class = UserSerializerWithToken
     permission_classes = (permissions.AllowAny,)
 
-    @transaction.atomic
-    def post(self, request, format=None):
-        serializer = UserSerializerWithToken(data=request.data)
+    @transaction.atomic()
+    def perform_create(self, serializer):
         if serializer.is_valid():
             instance = serializer.save()
 
             # Setup client accounts with initial amounts
             for cur in CURRENCY:
                 cur_obj = Currency.objects.get(currency=cur)
-                Account.objects.create(
-                    currency=cur_obj, balance=INITIAL_BALANCE[cur],
-                    user=instance)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+                Account.objects.create(currency=cur_obj,
+                                       balance=INITIAL_BALANCE[cur],
+                                       user=instance)
 
 
 class TransactionTypeViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin,
