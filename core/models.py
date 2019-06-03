@@ -174,6 +174,7 @@ class Transaction(models.Model):
     def get_received_amount(self):
         return self.sent_amount * self.get_conversion_rate() - self.commission
 
+    @transaction.atomic
     def save(self, *args, **kwargs):
         self.transaction_type = self.get_transaction_type()
         self.sender_currency = self.sender_account.currency.currency
@@ -183,10 +184,10 @@ class Transaction(models.Model):
         self.conversion_rate = self.get_conversion_rate()
         self.received_amount = self.get_received_amount()
 
-        super().save(*args, **kwargs)
-
         Account.withdraw(uuid=self.sender_account.uuid, amount=self.sent_amount)
         Account.deposit(uuid=self.receiver_account.uuid, amount=self.received_amount)
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return (f'{self.sender_account.user} -> '
