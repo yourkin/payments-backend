@@ -38,21 +38,21 @@ class Account(models.Model):
     )
 
     @classmethod
+    @transaction.atomic
     def deposit(cls, uuid, amount):
-        with transaction.atomic():
-            account = (cls.objects.select_for_update().get(uuid=uuid))
-            account.balance += amount
-            account.save()
+        account = cls.objects.select_for_update().get(uuid=uuid)
+        account.balance += amount
+        account.save()
 
     @classmethod
+    @transaction.atomic
     def withdraw(cls, uuid, amount):
-        with transaction.atomic():
-            account = (cls.objects.select_for_update().get(uuid=uuid))
+        account = cls.objects.select_for_update().get(uuid=uuid)
 
-            if account.balance < amount:
-                raise ValidationError('Insufficient funds')
-            account.balance -= amount
-            account.save()
+        if account.balance < amount:
+            raise ValidationError('Insufficient funds')
+        account.balance -= amount
+        account.save()
 
         return account
 
