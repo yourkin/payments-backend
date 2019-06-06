@@ -4,16 +4,19 @@ language: python
 python:
   - 3.7
 
+services:
+  - postgresq
+
 addons:
   postgresql: "10"
   apt:
     packages:
-      - postgresql-10
-      - postgresql-client-10
+    - postgresql-10
+    - postgresql-client-10
 env:
   - DJANGO=2.2
   global:
-    - PGPORT=5433
+  - PGPORT=5433
 
 before_install:
   - export DJANGO_SETTINGS_MODULE=paymentsbackend.settings
