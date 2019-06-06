@@ -5,7 +5,7 @@ python:
   - 3.7
 
 services:
-  - postgresq
+  - postgresql
 
 addons:
   postgresql: "10"
