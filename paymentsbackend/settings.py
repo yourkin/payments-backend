@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     # 3rd party
     'rest_framework',
     'corsheaders',
+    'rest_framework_swagger',
 
     # In-house
     'core.apps.CoreConfig'
