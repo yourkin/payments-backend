@@ -9,4 +9,3 @@ In the project directory, you can run:
 
 Runs the app in development mode.
 
-Connect with [https://github.com/tripmersion/payments-frontend](https://github.com/tripmersion/payments-frontend) client.
